@@ -26,7 +26,7 @@ DOCUMENTATION = '''
     type: notification
     short_description: Sends events to python stdlib logging
     description:
-      - This callback plugin will use python stdlib logging, create a logger and handlers, and send detailed events to the logger
+      - This callback plugin will use python stdlib logging
       - In 2.4 and above you can just put it in the main Ansible configuration file.
     version_added: "2.5"
     requirements:
@@ -155,7 +155,8 @@ BECOME = ' play_become=%(play_become)s play_become_user=%(play_become_user)s' + 
 CONTEXT_DEBUG_LOG_FORMAT = "%(asctime)s [%(name)s %(levelname)s %(hostname)s]" + PLAY
 EVERYTHING = CONTEXT_DEBUG_LOG_FORMAT + PLAY_DETAILS + PLAY_TAGS + ROLES + \
     TASK_DETAILS + BECOME + ANSIBLE_VERSION + PYTHON_VERSION + CLI + USER
-DEBUG_LOG_FORMAT = "%(asctime)s [%(name)s %(levelname)s %(hostname)s %(playbook)s] pid=%(process)d %(funcName)s:%(lineno)d - %(message)s"
+DEBUG_LOG_FORMAT = "%(asctime)s [%(name)s %(levelname)s %(hostname)s %(playbook)s] " + \
+    "pid=%(process)d %(funcName)s:%(lineno)d - %(message)s"
 LOG_FORMAT = "%(asctime)s [%(levelname)s] %(process)d @%(filename)s:%(lineno)d - %(message)s"
 MIN_LOG_FORMAT = "%(asctime)s %(funcName)s:%(lineno)d - %(message)s"
 
@@ -498,10 +499,13 @@ class CallbackModule(CallbackBase):
         super(CallbackModule, self).set_options(task_keys, var_options, direct)
 
         self.stdout_formatter = self._plugin_options['stdout_formatter'] or self.default_stdout_formatter
-        self.stdout_formatter_format = self._plugin_options['stdout_formatter_format'] or self.default_stdout_formatter_format
+        self.stdout_formatter_format = \
+            self._plugin_options['stdout_formatter_format'] or self.default_stdout_formatter_format
 
         self.file_formatter = self._plugin_options['file_formatter'] or self.default_file_formatter
-        self.file_formatter_format = self._plugin_options['file_formatter_format'] or self.default_file_formatter_format
+        self.file_formatter_format = \
+            self._plugin_options['file_formatter_format'] or self.default_file_formatter_format
+
         self.file_formatter_file = self._plugin_options['file_formatter_file'] or self.default_file_formatter_file
 
         self.logger_level = self._plugin_options['logger_level'] or self.default_logger_level
